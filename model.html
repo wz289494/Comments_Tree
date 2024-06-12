@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>评论树系统</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport' />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href='https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css' media='all' rel='stylesheet' type='text/css' />
+</head>
+<body>
+    <div id="main" style="width:100%;height:1000px;"></div>
+    <script src='https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+    <script src='https://cdn.bootcdn.net/ajax/libs/echarts/5.1.2/echarts.min.js'></script>
+    <script type="text/javascript">
+        var chartDom = document.getElementById('main');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        myChart.showLoading();
+        $.getJSON('评论树结构.json', function (data) {
+            myChart.hideLoading();
+            option = {
+                tooltip: {
+                            show:true,
+                            trigger: 'item',
+                            triggerOn: 'mousemove',
+                            position:"bottom",
+                            textStyle:{
+                                color:'#000',
+                                fontSize:17
+                            },
+                            extraCssText:'width:300px;white-space:pre-wrap;',
+                            formatter:function(params, ticket, callback){
+                                var tsxx=params.data.describes==""||params.data.describes==null?params.data.name:params.data.describes;
+                                return tsxx;
+                            }
+                        },
+                series: [
+                    {
+                        type: 'tree',
+                        data: [data],
+                        top: '1%',
+                        left: '7%',
+                        bottom: '1%',
+                        right: '20%',
+                        symbolSize: 7,
+                        itemStyle: {
+                            color: '#000', // 设置节点颜色为黑色
+                            borderColor: '#000', // 设置节点边框颜色为黑色
+                        },
+                        label: {
+                            color: '#000', // 字体颜色设置为黑色
+                            position: 'left',
+                            verticalAlign: 'middle',
+                            align: 'right',
+                            fontSize: 15
+                        },
+                        leaves: {
+                            label: {
+                                color: '#000', // 字体颜色设置为黑色
+                                position: 'right',
+                                verticalAlign: 'middle',
+                                align: 'left'
+                            }
+                        },
+                        initialTreeDepth: 1, // 默认展开到第三层级（层级从0开始计数）
+                        expandAndCollapse: true,
+                        animationDuration: 550,
+                        animationDurationUpdate: 750
+                    }
+                ]
+            };
+
+            myChart.setOption(option);
+        });
+    </script>
+</body>
+</html>
